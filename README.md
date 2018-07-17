@@ -48,7 +48,7 @@ nde
 Start a `node` shell
 
 ```
-nde
+nde node
 ```
 
 
