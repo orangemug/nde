@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+set -e
+
+# Use node image if one is present already
+latest_node_version=$(docker images | grep node | awk '{print $2}' | egrep "^\d" | sort | tail -1)
+
+# Find version from package.json
+version_check="
+let defaultVersion = 10;
+let packageJson = {}
+try {
+  packageJson = require('/code/package.json')
+}
+catch(err) {
+  if(err.code === 'MODULE_NOT_FOUND') {
+    console.log(defaultVersion);
+    process.exit(0);
+  }
+  else {
+    console.error(err.message);
+    process.exit(1);
+  }
+}
+if(!(packageJson.engines && packageJson.engines.node)) {
+  console.log(defaultVersion);
+  process.exit(0);
+}
+
+const semver=require('/usr/local/lib/node_modules/npm/node_modules/semver');
+for(let i=30; i>0; i--) {
+  if(semver.satisfies(i+'.0.0', packageJson.engines.node)) {
+    console.log(i); process.exit(0);
+  }
+}"
+
+version=$(docker run -v $(pwd):/code:delegated node:$latest_node_version node -e "$version_check")
+
+NODE_VERSION=10
+POSITIONAL=()
+ARGS=()
+# Extract the first port so we can add a env variable
+PORTS=()
+GOT_POSITIONAL=0
+while [[ $# -gt 0 ]]
+do
+  key="$1"
+
+  if [[ $# -gt 1 && $2 != -* ]]; then
+    NEXT_OPT_ARG=0
+  else
+    NEXT_OPT_ARG=1
+  fi
+
+  if [ $GOT_POSITIONAL -gt 0 ]; then
+    POSITIONAL+=("$1") # save it in an array for later
+    shift
+  else
+    case $key in
+      --node)
+        if [ $NEXT_OPT_ARG -eq 1 ]; then
+          >&2 echo "Invalid node version $2"
+          exit 2
+        else
+          version="$2"
+          shift
+          shift
+        fi
+        ;;
+      -p|--port|--expose)
+        PORTS+=("$2")
+        ARGS+=("$1 $2")
+        shift
+        ;;
+      -*=*|--*=*)
+        ARGS+=("$1")
+        shift
+        ;;
+      -*|--*)
+        if [ $NEXT_OPT_ARG ]; then
+          ARGS+=("$1 $2")
+          shift
+          shift
+        else
+          ARGS+=("$1")
+          shift
+        fi
+        ;;
+      *)    # unknown option
+        GOT_POSITIONAL=1
+        POSITIONAL+=("$1") # save it in an array for later
+        shift
+        ;;
+    esac
+  fi
+
+done
+
+# echo "POSITIONAL=${POSITIONAL[@]}"
+# echo "ARGS=${ARGS[@]}"
+
+if [ ${#PORTS[@]} -gt 0 ]; then 
+  IFS=':' read -r -a PORT_PARTS <<< "${PORTS[0]}"
+  LEN="${#PORT_PARTS[@]}"
+  if [ $LEN -eq 3 ]; then
+    PORT=${PORT_PARTS[1]}
+    if [ -z $PORT ]; then 
+      PORT=${PORT_PARTS[2]}
+    fi
+  elif [ $LEN -eq 2 ]; then
+    PORT=${PORT_PARTS[0]}
+    if [ -z $PORT ]; then 
+      PORT=${PORT_PARTS[1]}
+    fi
+  elif [ $LEN -eq 1 ]; then
+    PORT=${PORT_PARTS[0]}
+  fi
+fi
+
+>&2 echo "node:$version"
+
+if [ ${#POSITIONAL[@]} -lt 1 ]; then
+  COMMAND="bash"
+else
+  COMMAND="${POSITIONAL[@]}"
+fi
+
+docker run \
+  -i \
+  -t \
+  -v $(pwd):/code:delegated \
+  -e PORT=$PORT \
+  "${ARGS[@]}" \
+  node:$version bash -c "cd /code && $COMMAND"
+
