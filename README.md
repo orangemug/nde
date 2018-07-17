@@ -12,7 +12,7 @@ Features:
 
  - The first `-p PORT` gets included as an enviroment varaible
  - Gets the node version from your `package.json`
- - Mounts the local directory and `cd`'s to it
+ - Mounts the local directory and `cd`'s to it (with `:delegated`, becuase OSX perf is poor without it)
 
 
 ## Install
