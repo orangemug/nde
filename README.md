@@ -3,10 +3,8 @@ A '**n**ode **d**ocker **e**nviroment' so I don't have to run untrusted code out
 ...
 
 [![stability-unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)][stability]
-[![Build Status](https://circleci.com/gh/orangemug/nde.png?style=shield)][circleci]
 
 [stability]:   https://github.com/orangemug/stability-badges#unstable
-[circleci]:    https://circleci.com/gh/orangemug/nde
 
 
 Developing software often requires trying libraries out on your local machine. But you are often running untrusted code which could be doing literally anything. This aims to be a really simple wrapper around docker with no dependencies (other than docker) to run node.js processes.
