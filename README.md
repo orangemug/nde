@@ -1,6 +1,5 @@
 # nde
 A '**n**ode **d**ocker **e**nviroment' so I don't have to run untrusted code outside a container when developing software
-...
 
 [![stability-unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)][stability]
 
