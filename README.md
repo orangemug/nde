@@ -1,5 +1,5 @@
 # nde
-A '**n**ode **d**ocker **e**nviroment' so I don't have to run untrusted code outside a container when developing software
+A '**n**ode **d**ocker **e**nvironment' so I don't have to run untrusted code outside a container when developing software
 
 [![stability-unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)][stability]
 
@@ -10,9 +10,9 @@ Developing software often requires trying libraries out on your local machine. B
 
 Features:
 
- - The first `-p PORT` gets included as an enviroment varaible
+ - The first `-p PORT` gets included as an environment variable
  - Gets the node version from your `package.json`
- - Mounts the local directory and `cd`'s to it (with `:delegated`, becuase OSX perf is poor without it)
+ - Mounts the local directory and `cd`'s to it (with `:delegated`, because OSX perf is poor without it)
 
 
 ## Install
@@ -32,7 +32,7 @@ Run a process
 nde node hello.js
 ```
 
-Bind to a port, note that the container will have an enviroment variable `PORT` defined for the first `-p` option defined
+Bind to a port, note that the container will have an environment variable `PORT` defined for the first `-p` option defined
 
 ```
 nde -p 3000 node server.js
@@ -49,6 +49,12 @@ Start a `node` shell
 
 ```
 nde node
+```
+
+Override node version
+
+```
+nde --node 8
 ```
 
 
