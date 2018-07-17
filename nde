@@ -89,9 +89,6 @@ do
 
 done
 
-# echo "POSITIONAL=${POSITIONAL[@]}"
-# echo "ARGS=${ARGS[@]}"
-
 if [ ${#PORTS[@]} -gt 0 ]; then 
   IFS=':' read -r -a PORT_PARTS <<< "${PORTS[0]}"
   LEN="${#PORT_PARTS[@]}"
