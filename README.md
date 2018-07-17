@@ -36,9 +36,16 @@ Bind to a port, note that the container will have an enviroment variable `PORT` 
 
 ```
 nde -p 3000 node server.js
+nde -p 3000 node -e "console.log('hello world!')"
 ```
 
-Start a shell
+Start a `bash` shell
+
+```
+nde
+```
+
+Start a `node` shell
 
 ```
 nde
