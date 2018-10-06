@@ -2,7 +2,7 @@
 set -e
 
 # Use node image if one is present already
-latest_node_version=$(docker images | grep node | awk '{print $2}' | egrep "^\d" | sort | tail -1)
+present_node_version=$(docker images | grep node | awk '{print $2}' | egrep "^\d" | sort | tail -1)
 
 # Find version from package.json
 version_check="
@@ -36,7 +36,7 @@ for(let i=10; i>0; i--) {
   }
 }"
 
-version=$(docker run -v $(pwd):/code:delegated node:$latest_node_version node -e "$version_check")
+version=$(docker run -v $(pwd):/code:delegated node:${present_node_version:-10} node -e "$version_check")
 
 NODE_VERSION=10
 ARGS=()
