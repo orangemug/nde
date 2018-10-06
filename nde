@@ -119,5 +119,5 @@ docker run \
   -v $(pwd):/code:delegated \
   -e PORT=$PORT \
   ${ARGS[@]} \
-  node:$version "${@:-bash}"
+  node:$version "${@:-sh}"
 

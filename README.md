@@ -39,7 +39,7 @@ nde -p 3000 node server.js
 nde -p 3000 node -e "console.log('hello world!')"
 ```
 
-Start a `bash` shell
+Start a `sh` shell
 
 ```
 nde
