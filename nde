@@ -26,8 +26,11 @@ if(!(packageJson.engines && packageJson.engines.node)) {
   process.exit(0);
 }
 
+// This picks the major versions starting with the most recent. The idea being
+// that you don't want to be downloading lots of different minor versions of
+// nodejs
 const semver=require('/usr/local/lib/node_modules/npm/node_modules/semver');
-for(let i=30; i>0; i--) {
+for(let i=10; i>0; i--) {
   if(semver.satisfies(i+'.0.0', packageJson.engines.node)) {
     console.log(i); process.exit(0);
   }
